@@ -1,0 +1,15 @@
+apiVersion: platform.example.com/v1alpha1
+kind: WebApp
+metadata:
+  name: webservice
+  namespace: default
+spec:
+  parameters:
+    image: nginx
+    port: 8080
+    replicas: 1
+    service:
+      enabled: true
+    ingress:
+      enabled: false # ingress is not working in local controlplane
+    serviceAccount: default
