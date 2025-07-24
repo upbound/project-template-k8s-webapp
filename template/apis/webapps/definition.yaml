@@ -1,0 +1,87 @@
+apiVersion: apiextensions.crossplane.io/v2alpha1 # ToDo(haarchri): update to v2
+kind: CompositeResourceDefinition
+metadata:
+  name: webapps.platform.example.com
+spec:
+  group: platform.example.com
+  names:
+    categories:
+    - crossplane
+    kind: WebApp
+    plural: webapps
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        description: WebApp is the Schema for the WebApp API.
+        properties:
+          spec:
+            description: WebAppSpec defines the desired state of WebApp.
+            properties:
+              parameters:
+                properties:
+                  image:
+                    description: Container image to deploy for the web application
+                    type: string
+                  ingress:
+                    description: Ingress configuration for external access
+                    properties:
+                      enabled:
+                        description: Whether to create an ingress resource for external access
+                        type: boolean
+                    type: object
+                  port:
+                    description: Port number on which the application listens
+                    type: number
+                  replicas:
+                    description: Number of pod replicas to run
+                    type: integer
+                  service:
+                    description: Service configuration for internal cluster access
+                    properties:
+                      enabled:
+                        description: Whether to create a service for internal access
+                        type: boolean
+                    type: object
+                  serviceAccount:
+                    description: Name of the service account to use for the pods
+                    type: string
+                type: object
+            type: object
+          status:
+            description: WebAppStatus defines the observed state of WebApp.
+            properties:
+              deploymentConditions:
+                description: Conditions of the deployment
+                items:
+                  properties:
+                    lastTransitionTime:
+                      type: string
+                    lastUpdateTime:
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              availableReplicas:
+                description: Number of available replicas
+                type: integer
+              url:
+                description: External URL of the web application
+                type: string
+            type: object
+        required:
+        - spec
+        type: object
+    served: true

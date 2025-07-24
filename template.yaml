@@ -1,0 +1,23 @@
+name: project-template-k8s-webapp
+description: "A template for creating a new WebApp inside Kubernetes."
+version: 0.1.0
+
+languages:
+- kcl
+
+# Directory and file renaming patterns
+rename:
+  directories:
+    # Remove language suffix from directories
+    - pattern: "*-kcl"
+      replacement: "*"
+      languages: ["kcl"]
+
+files:
+  # Template files that need variable substitution
+  "README.md":
+    template: true
+    required: true
+  "upbound.yaml":
+    template: true
+    required: true
