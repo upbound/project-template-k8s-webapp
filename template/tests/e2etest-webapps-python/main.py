@@ -1,10 +1,12 @@
 from .model.io.upbound.dev.meta.e2etest import v1alpha1 as e2etest
-from .model.io.k8s.apimachinery.pkg.apis.meta import v1
+from .model.io.k8s.apimachinery.pkg.apis.meta import v1 as metav1
+from .model.io.k8s.apimachinery.pkg.apis.core.meta import v1 as metacorev1
+
 from .model.io.k8s.api.rbac import v1 as rbacv1
 from .model.com.example.platform.webapp import v1alpha1 as platformv1alpha1
 
 test = e2etest.E2ETest(
-    metadata=v1.ObjectMeta(
+    metadata=metav1.ObjectMeta(
         name="e2etest-webapps-python",
     ),
     spec = e2etest.Spec(
@@ -12,7 +14,7 @@ test = e2etest.E2ETest(
             rbacv1.ClusterRoleBinding(
                 apiVersion="rbac.authorization.k8s.io/v1",
                 kind ="ClusterRoleBinding",
-                metadata=v1.ObjectMeta(
+                metadata=metacorev1.ObjectMeta(
                     name="crossplane-clusteradmin"
                 ),
                 roleRef=rbacv1.RoleRef(
@@ -24,7 +26,7 @@ test = e2etest.E2ETest(
                     rbacv1.Subject(
                         kind="ServiceAccount",
                         name="crossplane",
-                        namespace="crospslane-system"
+                        namespace="crossplane-system"
                     )
                 ]
             ).model_dump(exclude_unset=True)
@@ -41,7 +43,7 @@ test = e2etest.E2ETest(
             platformv1alpha1.WebApp(
                 apiVersion="platform.example.com/v1alpha1",
                 kind="WebApp",
-                metadata=v1.ObjectMeta(
+                metadata=metav1.ObjectMeta(
                     name="webservice",
                     namespace="default"
                 ),

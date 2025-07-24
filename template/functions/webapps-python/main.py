@@ -4,7 +4,7 @@ from .model.io.k8s.api.apps import v1 as appsv1
 from .model.io.k8s.api.core import v1 as corev1
 from .model.io.k8s.api.networking import v1 as networkingv1
 from .model.com.example.platform.webapp import v1alpha1 as platformv1alpha1
-from .model.io.k8s.apimachinery.pkg.apis.meta import v1
+from .model.io.k8s.apimachinery.pkg.apis.core.meta import v1 as coremetav1
 def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
     oxr = platformv1alpha1.WebApp(**req.observed.composite.resource)
     ocds = req.observed.resources
@@ -13,7 +13,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
     status = platformv1alpha1.Status()
 
     deployment = appsv1.Deployment(
-        metadata=v1.ObjectMeta(
+        metadata=coremetav1.ObjectMeta(
             name=oxr.metadata.name,
             namespace=oxr.metadata.namespace,
             labels={
@@ -22,14 +22,14 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
         ),
         spec=appsv1.DeploymentSpec(
             replicas=oxr.spec.parameters.replicas,
-            selector=v1.LabelSelector(
+            selector=coremetav1.LabelSelector(
                 matchLabels={
                     "app.kubernetes.io/name": oxr.metadata.name,
                     "app": oxr.metadata.name
                 }
             ),
             template=corev1.PodTemplateSpec(
-                metadata=v1.ObjectMeta(
+                metadata=coremetav1.ObjectMeta(
                     labels={
                         "app.kubernetes.io/name": oxr.metadata.name,
                         "app": oxr.metadata.name
@@ -77,7 +77,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
 
     if oxr.spec.parameters.service and oxr.spec.parameters.service.enabled:
         service = corev1.Service(
-            metadata=v1.ObjectMeta(
+            metadata=coremetav1.ObjectMeta(
                 name=oxr.metadata.name,
                 namespace=oxr.metadata.namespace,
             ),
@@ -104,7 +104,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
 
     if oxr.spec.parameters.ingress and oxr.spec.parameters.ingress.enabled:
         ingress = networkingv1.Ingress(
-            metadata=v1.ObjectMeta(
+            metadata=coremetav1.ObjectMeta(
                 name=oxr.metadata.name,
                 namespace=oxr.metadata.namespace,
                 annotations={
