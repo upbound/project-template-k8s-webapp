@@ -42,7 +42,7 @@ jobs:
           api-token: ${{ secrets.UP_API_TOKEN }}
           organization: ${{ secrets.UP_ORG }}
           channel: main
-          version: v0.39.0-121.g5a95e138
+          version: v0.39.0-350.gb6abc325
 
       - name: Initialize project
         run: up project init -e ./template generated-project --language ${{ matrix.language }} --test-language ${{ matrix.test-language }}
