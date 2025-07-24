@@ -1,14 +1,14 @@
 name: End to End Testing
 
 on:
-  # https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/
-  # pull_request_target is potentially dangerous target so we keep it strict
-  # under the label and benefit from secret propagation
-  pull_request_target:
-    types:
-      - synchronize
-      - labeled
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release-*
+    tags:
+      - 'v*'
+  pull_request: {}
+  workflow_dispatch: {}
 
 env:
   UP_ORG: ${{ secrets.UP_ORG }}
