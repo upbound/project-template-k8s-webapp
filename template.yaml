@@ -4,6 +4,7 @@ version: 0.1.0
 
 languages:
 - kcl
+- python
 
 # Directory and file renaming patterns
 rename:
@@ -12,6 +13,9 @@ rename:
     - pattern: "*-kcl"
       replacement: "*"
       languages: ["kcl"]
+    - pattern: "*-python"
+      replacement: "*"
+      languages: ["python"]
 
 files:
   # Template files that need variable substitution
