@@ -5,6 +5,7 @@ version: 0.1.0
 languages:
 - kcl
 - python
+- go
 
 # Directory and file renaming patterns
 rename:
@@ -16,6 +17,9 @@ rename:
     - pattern: "*-python"
       replacement: "*"
       languages: ["python"]
+    - pattern: "*-go"
+      replacement: "*"
+      languages: ["go"]
 
 files:
   # Template files that need variable substitution

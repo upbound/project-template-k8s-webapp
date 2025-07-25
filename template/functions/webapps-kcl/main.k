@@ -43,7 +43,9 @@ _desired_deployment = appsv1.Deployment{
                     image: oxr.spec.parameters.image
                     imagePullPolicy: "Always"
                     ports: [{
+                        name: "http"
                         containerPort: int(oxr.spec.parameters.port)
+                        protocol: "TCP"
                     }]
                     resources: {
                         requests: {
@@ -80,7 +82,7 @@ if oxr.spec.parameters.service.enabled:
                 name: "http"
                 protocol: "TCP"
                 port: 80
-                targetPort: int(oxr.spec.parameters.port)
+                targetPort: "http"
             }]
         }
     }

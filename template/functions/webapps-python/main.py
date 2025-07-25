@@ -44,7 +44,9 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
                             imagePullPolicy="Always",
                             ports=[
                                 corev1.ContainerPort(
-                                    containerPort=int(oxr.spec.parameters.port)
+                                    name="http",
+                                    containerPort=int(oxr.spec.parameters.port),
+                                    protocol="TCP",
                                 )
                             ],
                             resources=corev1.ResourceRequirements(
@@ -90,7 +92,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
                         name="http",
                         protocol="TCP",
                         port=80,
-                        targetPort=int(oxr.spec.parameters.port)
+                        targetPort="http"
                     )
                 ]
             )
