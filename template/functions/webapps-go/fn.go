@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 
-	appsv1 "dev.upbound.io/models/apps/v1"
 	"dev.upbound.io/models/com/example/platform/v1alpha1"
+	appsv1 "dev.upbound.io/models/io/k8s/apps/v1"
+	coremetav1 "dev.upbound.io/models/io/k8s/core/meta/v1"
 	corev1 "dev.upbound.io/models/io/k8s/core/v1"
-	metav1 "dev.upbound.io/models/io/k8s/meta/v1"
 	networkingv1 "dev.upbound.io/models/io/k8s/networking/v1"
 	resourcev1 "dev.upbound.io/models/io/k8s/resource/v1"
 	"github.com/crossplane/crossplane-runtime/pkg/logging"
@@ -92,7 +92,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 	deployment := &appsv1.Deployment{
 		APIVersion: ptr.To(appsv1.DeploymentAPIVersionAppsV1),
 		Kind:       ptr.To(appsv1.DeploymentKindDeployment),
-		Metadata: &metav1.ObjectMeta{
+		Metadata: &coremetav1.ObjectMeta{
 			Name:      xr.Metadata.Name,
 			Namespace: xr.Metadata.Namespace,
 			Labels: &map[string]string{
@@ -101,7 +101,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 		},
 		Spec: &appsv1.DeploymentSpec{
 			Replicas: ptr.To(int32(*params.Replicas)),
-			Selector: &metav1.LabelSelector{
+			Selector: &coremetav1.LabelSelector{
 				MatchLabels: &map[string]string{
 					"app.kubernetes.io/name": *xr.Metadata.Name,
 					"app":                    *xr.Metadata.Name,
@@ -110,7 +110,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 			// ToDo(haarchri): remove this
 			Strategy: &appsv1.IoK8SApiAppsV1DeploymentStrategy{},
 			Template: &corev1.PodTemplateSpec{
-				Metadata: &metav1.ObjectMeta{
+				Metadata: &coremetav1.ObjectMeta{
 					Labels: &map[string]string{
 						"app.kubernetes.io/name": *xr.Metadata.Name,
 						"app":                    *xr.Metadata.Name,
@@ -172,7 +172,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 		service := &corev1.Service{
 			APIVersion: ptr.To(corev1.ServiceAPIVersionV1),
 			Kind:       ptr.To(corev1.ServiceKindService),
-			Metadata: &metav1.ObjectMeta{
+			Metadata: &coremetav1.ObjectMeta{
 				Name:      xr.Metadata.Name,
 				Namespace: xr.Metadata.Namespace,
 			},
@@ -214,7 +214,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 		ingress := &networkingv1.Ingress{
 			APIVersion: ptr.To(networkingv1.IngressAPIVersionNetworkingK8SIoV1),
 			Kind:       ptr.To(networkingv1.IngressKindIngress),
-			Metadata: &metav1.ObjectMeta{
+			Metadata: &coremetav1.ObjectMeta{
 				Name:      xr.Metadata.Name,
 				Namespace: xr.Metadata.Namespace,
 				Annotations: &map[string]string{
