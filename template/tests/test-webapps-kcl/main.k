@@ -38,7 +38,9 @@ _items = [
                                     image: "nginx"
                                     imagePullPolicy: "Always"
                                     ports: [{
+                                        name: "http"
                                         containerPort: 8080
+                                        protocol: "TCP"
                                     }]
                                     resources: {
                                         requests: {
@@ -105,7 +107,7 @@ _items = [
                             name: "http"
                             protocol: "TCP"
                             port: 80
-                            targetPort: 8080
+                            targetPort: "http"
                         }]
                     }
                 }
@@ -142,7 +144,9 @@ _items = [
                                     image: "nginx"
                                     imagePullPolicy: "Always"
                                     ports: [{
+                                        name: "http"
                                         containerPort: 8080
+                                        protocol: "TCP"
                                     }]
                                     resources: {
                                         requests: {

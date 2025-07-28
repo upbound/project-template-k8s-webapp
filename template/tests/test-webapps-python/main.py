@@ -1,5 +1,6 @@
 from .model.io.upbound.dev.meta.compositiontest import v1alpha1 as compositiontest
-from .model.io.k8s.apimachinery.pkg.apis.meta import v1
+from .model.io.k8s.apimachinery.pkg.apis.core.meta import v1 as coremetav1
+from .model.io.k8s.apimachinery.pkg.apis.meta import v1 as metav1
 from .model.io.k8s.api.apps import v1 as appsv1
 from .model.io.k8s.api.core import v1 as corev1
 from .model.com.example.platform.webapp import v1alpha1 as platformv1alpha1
@@ -7,7 +8,7 @@ from .model.com.example.platform.webapp import v1alpha1 as platformv1alpha1
 deployment = appsv1.Deployment(
     apiVersion = 'apps/v1',
     kind = 'Deployment',
-    metadata=v1.ObjectMeta(
+    metadata=coremetav1.ObjectMeta(
         name="webservice",
         namespace="default",
         annotations={
@@ -16,14 +17,14 @@ deployment = appsv1.Deployment(
     ),
     spec=appsv1.DeploymentSpec(
         replicas=1,
-        selector=v1.LabelSelector(
+        selector=coremetav1.LabelSelector(
             matchLabels={
                 "app.kubernetes.io/name": "webservice",
                 "app": "webservice"
             }
         ),
         template=corev1.PodTemplateSpec(
-            metadata=v1.ObjectMeta(
+            metadata=coremetav1.ObjectMeta(
                 labels={
                     "app.kubernetes.io/name": "webservice",
                     "app": "webservice"
@@ -38,7 +39,9 @@ deployment = appsv1.Deployment(
                         imagePullPolicy="Always",
                         ports=[
                             corev1.ContainerPort(
-                                containerPort=8080
+                                name="http",
+                                containerPort=8080,
+                                protocol="TCP",
                             )
                         ],
                         resources=corev1.ResourceRequirements(
@@ -62,7 +65,7 @@ deployment = appsv1.Deployment(
 webapp = platformv1alpha1.WebApp(
     apiVersion="platform.example.com/v1alpha1",
     kind="WebApp",
-    metadata=v1.ObjectMeta(
+    metadata=metav1.ObjectMeta(
         name="webservice",
         namespace="default"
     ),
@@ -97,7 +100,7 @@ webapp = platformv1alpha1.WebApp(
 service = corev1.Service(
     apiVersion = 'v1',
     kind = 'Service',
-    metadata=v1.ObjectMeta(
+    metadata=coremetav1.ObjectMeta(
         name="webservice",
         namespace="default"
     ),
@@ -108,8 +111,9 @@ service = corev1.Service(
         ports=[
             corev1.ServicePort(
                 name="http",
+                protocol="TCP",
                 port=80,
-                targetPort=8080
+                targetPort="http"
             )
         ]
     )
@@ -118,7 +122,7 @@ service = corev1.Service(
 observed_deployment = appsv1.Deployment(
     apiVersion = 'apps/v1',
     kind = 'Deployment',
-    metadata=v1.ObjectMeta(
+    metadata=coremetav1.ObjectMeta(
         name="webservice",
         namespace="default",
         annotations={
@@ -127,14 +131,14 @@ observed_deployment = appsv1.Deployment(
     ),
     spec=appsv1.DeploymentSpec(
         replicas=1,
-        selector=v1.LabelSelector(
+        selector=coremetav1.LabelSelector(
             matchLabels={
                 "app.kubernetes.io/name": "webservice",
                 "app": "webservice"
             }
         ),
         template=corev1.PodTemplateSpec(
-            metadata=v1.ObjectMeta(
+            metadata=coremetav1.ObjectMeta(
                 labels={
                     "app.kubernetes.io/name": "webservice",
                     "app": "webservice"
@@ -149,7 +153,9 @@ observed_deployment = appsv1.Deployment(
                         imagePullPolicy="Always",
                         ports=[
                             corev1.ContainerPort(
-                                containerPort=8080
+                                containerPort=8080,
+                                name="http",
+                                protocol="TCP",
                             )
                         ],
                         resources=corev1.ResourceRequirements(
@@ -182,7 +188,7 @@ observed_deployment = appsv1.Deployment(
 )
 
 test = compositiontest.CompositionTest(
-    metadata=v1.ObjectMeta(
+    metadata=metav1.ObjectMeta(
         name="test-webapps-python",
     ),
     spec = compositiontest.Spec(
