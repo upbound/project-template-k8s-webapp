@@ -1,0 +1,47 @@
+# code: language=yaml
+# yaml-language-server: $schema=../../.up/json/models/index.schema.json
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    gotemplating.fn.crossplane.io/composition-resource-name: deployment
+    {{ if eq (.observed.resources.deployment | getResourceCondition "Available").Status "True" }}
+    gotemplating.fn.crossplane.io/ready: "True"
+    {{ end }}
+  name: {{ .observed.composite.resource.metadata.name }}
+  namespace: {{ .observed.composite.resource.metadata.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .observed.composite.resource.metadata.name }}
+spec:
+  replicas: {{ .observed.composite.resource.spec.parameters.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .observed.composite.resource.metadata.name }}
+      app: {{ .observed.composite.resource.metadata.name }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .observed.composite.resource.metadata.name }}
+        app: {{ .observed.composite.resource.metadata.name }}
+    spec:
+      serviceAccountName: {{ .observed.composite.resource.spec.parameters.serviceAccount }}
+      containers:
+      - name: {{ .observed.composite.resource.metadata.name }}
+        image: {{ .observed.composite.resource.spec.parameters.image }}
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: {{ .observed.composite.resource.spec.parameters.port }}
+          protocol: TCP
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+      restartPolicy: Always
+status: {}
