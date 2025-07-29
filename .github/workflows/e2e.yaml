@@ -12,6 +12,7 @@ on:
 
 env:
   UP_ORG: ${{ secrets.UP_ORG }}
+  UP_API_TOKEN: ${{ secrets.UP_API_TOKEN }}
 
 jobs:
   e2e:
@@ -41,7 +42,7 @@ jobs:
           api-token: ${{ secrets.UP_API_TOKEN }}
           organization: ${{ secrets.UP_ORG }}
           channel: main
-          version: v0.39.0-350.gb6abc325
+          version: v0.39.0-384.g0a0c8634
 
       - name: Initialize project
         run: up project init -e ./template generated-project --language ${{ matrix.language }} --test-language ${{ matrix.test-language }}
@@ -50,10 +51,6 @@ jobs:
         run: cd generated-project && up project build
 
       - name: Run e2e tests
-        env:
-          UP_AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
-          UP_AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          UP_AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
         run: cd generated-project && up test run tests/* --e2e --local --skip-control-plane-cleanup
 
       - name: Install kind CLI
