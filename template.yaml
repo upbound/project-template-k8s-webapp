@@ -6,6 +6,7 @@ languages:
 - kcl
 - python
 - go
+- go-templating
 
 # Directory and file renaming patterns
 rename:
@@ -20,6 +21,9 @@ rename:
     - pattern: "*-go"
       replacement: "*"
       languages: ["go"]
+    - pattern: "*-go-templating"
+      replacement: "*"
+      languages: ["go-templating"]
 
 files:
   # Template files that need variable substitution

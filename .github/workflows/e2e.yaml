@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        language: [kcl, python, go]
+        language: [go, go-templating, kcl, python]
         test-language: [kcl, python]
     steps:
       - name: Checkout
