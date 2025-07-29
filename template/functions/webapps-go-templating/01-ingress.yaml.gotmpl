@@ -1,0 +1,33 @@
+# code: language=yaml
+# yaml-language-server: $schema=../../.up/json/models/index.schema.json
+
+{{ if .observed.composite.resource.spec.parameters.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    gotemplating.fn.crossplane.io/composition-resource-name: ingress
+    {{ if (get (getComposedResource . "ingress").status.loadBalancer.ingress 0).hostname }}
+    gotemplating.fn.crossplane.io/ready: "True"
+    {{ end }}
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
+  name: {{ .observed.composite.resource.metadata.name }}
+  namespace: {{ .observed.composite.resource.metadata.namespace }}
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .observed.composite.resource.metadata.name }}
+            port:
+              number: 80
+{{ end }}
