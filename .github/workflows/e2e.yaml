@@ -45,7 +45,7 @@ jobs:
           version: v0.39.0-384.g0a0c8634
 
       - name: Initialize project
-        run: up project init -e ./template generated-project --language ${{ matrix.language }} --test-language ${{ matrix.test-language }}
+        run: up project init -t ./template generated-project --language ${{ matrix.language }} --test-language ${{ matrix.test-language }}
 
       - name: Build project
         run: cd generated-project && up project build
