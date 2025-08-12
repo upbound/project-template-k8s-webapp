@@ -45,8 +45,6 @@ jobs:
         with:
           api-token: ${{ secrets.UP_DEV_API_TOKEN }}
           organization: ${{ secrets.UP_DEV_ORG }}
-          channel: main
-          version: v0.39.0-384.g0a0c8634
 
       # during uxp2 development we need upbound-dev login here
       - name: Login to xpkg with robot
