@@ -18,9 +18,6 @@ jobs:
         uses: upbound/action-up@v1
         with:
           skip-login: true
-          # ToDo(haarchri): switch to v0.40.0 when released
-          channel: main
-          version: v0.39.0-384.g0a0c8634
 
       - name: Build project
         run: up project build
