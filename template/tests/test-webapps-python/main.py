@@ -41,7 +41,6 @@ deployment = appsv1.Deployment(
                             corev1.ContainerPort(
                                 name="http",
                                 containerPort=8080,
-                                protocol="TCP",
                             )
                         ],
                         resources=corev1.ResourceRequirements(
@@ -111,7 +110,6 @@ service = corev1.Service(
         ports=[
             corev1.ServicePort(
                 name="http",
-                protocol="TCP",
                 port=80,
                 targetPort="http"
             )

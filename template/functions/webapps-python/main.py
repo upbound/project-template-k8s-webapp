@@ -6,7 +6,7 @@ from .model.io.k8s.api.networking import v1 as networkingv1
 from .model.com.example.platform.webapp import v1alpha1 as platformv1alpha1
 from .model.io.k8s.apimachinery.pkg.apis.core.meta import v1 as coremetav1
 def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
-    oxr = platformv1alpha1.WebApp(**req.observed.composite.resource)
+    oxr = platformv1alpha1.WebApp(**resource.struct_to_dict(req.observed.composite.resource))
     ocds = req.observed.resources
 
     # Create a Status object to collect updates
@@ -68,7 +68,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
     )
 
     if "deployment" in ocds:
-        observed_deployment = appsv1.Deployment(**ocds["deployment"].resource)
+        observed_deployment = appsv1.Deployment(**resource.struct_to_dict(ocds["deployment"].resource))
         if observed_deployment.status and observed_deployment.status.conditions:
             for condition in observed_deployment.status.conditions:
                 if condition.type == "Available" and condition.status == "True":
@@ -99,7 +99,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
         )
 
         if "service" in ocds:
-            observed_service = corev1.Service(**ocds["service"].resource)
+            observed_service = corev1.Service(**resource.struct_to_dict(ocds["service"].resource))
             if observed_service.spec and observed_service.spec.clusterIP:
                 rsp.desired.resources["service"].ready = True
         resource.update(rsp.desired.resources["service"], service)
@@ -143,7 +143,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
         )
 
         if "ingress" in ocds:
-            observed_ingress = networkingv1.Ingress(**ocds["ingress"].resource)
+            observed_ingress = networkingv1.Ingress(**resource.struct_to_dict(ocds["ingress"].resource))
             if (observed_ingress.status and
                 observed_ingress.status.loadBalancer and
                 observed_ingress.status.loadBalancer.ingress and
@@ -154,7 +154,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
 
     # Set status with defaults
     if "deployment" in ocds:
-        observed_deployment = appsv1.Deployment(**ocds["deployment"].resource)
+        observed_deployment = appsv1.Deployment(**resource.struct_to_dict(ocds["deployment"].resource))
         if observed_deployment.status and observed_deployment.status.conditions:
             status.deploymentConditions = []
             for condition in observed_deployment.status.conditions:
@@ -173,7 +173,7 @@ def compose(req: fnv1.RunFunctionRequest, rsp: fnv1.RunFunctionResponse):
         status.availableReplicas = 0
 
     if "ingress" in ocds:
-        observed_ingress = networkingv1.Ingress(**ocds["ingress"].resource)
+        observed_ingress = networkingv1.Ingress(**resource.struct_to_dict(ocds["ingress"].resource))
         status.url = (
             observed_ingress.status.loadBalancer.ingress[0].hostname
             if (observed_ingress.status and
