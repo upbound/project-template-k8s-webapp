@@ -16,7 +16,7 @@ _items = [
                             "crossplane.io/composition-resource-name": "deployment"
                         }
                     }
-                    spec: {
+                    spec = {
                         replicas: 1
                         selector: {
                             matchLabels: {
@@ -24,14 +24,14 @@ _items = [
                                 app: "webservice"
                             }
                         }
-                        template: {
+                        template = {
                             metadata: {
                                 labels: {
                                     "app.kubernetes.io/name": "webservice"
                                     app: "webservice"
                                 }
                             }
-                            spec: {
+                            spec = {
                                 serviceAccountName: "default"
                                 containers: [{
                                     name: "webservice"
@@ -66,7 +66,7 @@ _items = [
                         name: "webservice"
                         namespace: "default"
                     }
-                    spec: {
+                    spec = {
                         parameters: {
                             image: "nginx"
                             port: 8080
@@ -99,7 +99,7 @@ _items = [
                         name: "webservice"
                         namespace: "default"
                     }
-                    spec: {
+                    spec = {
                         selector: {
                             app: "webservice"
                         }
@@ -122,7 +122,7 @@ _items = [
                             "crossplane.io/composition-resource-name": "deployment"
                         }
                     }
-                    spec: {
+                    spec = {
                         replicas: 1
                         selector: {
                             matchLabels: {
@@ -130,14 +130,14 @@ _items = [
                                 app: "webservice"
                             }
                         }
-                        template: {
+                        template = {
                             metadata: {
                                 labels: {
                                     "app.kubernetes.io/name": "webservice"
                                     app: "webservice"
                                 }
                             }
-                            spec: {
+                            spec = {
                                 serviceAccountName: "default"
                                 containers: [{
                                     name: "webservice"
