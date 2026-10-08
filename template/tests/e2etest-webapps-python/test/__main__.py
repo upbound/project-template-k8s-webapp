@@ -66,7 +66,7 @@ test = e2etest.E2ETest(
         ],
         extraResources=[],
         skipDelete=False,
-        timeoutSeconds=4500,
+        timeoutSeconds=600, # 10 minutes
     )
 )
 
