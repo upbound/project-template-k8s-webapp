@@ -18,7 +18,7 @@ _items = [
                         {
                             kind: "ServiceAccount"
                             name: "crossplane"
-                            namespace: "crospslane-system"
+                            namespace: "crossplane-system"
                         }
                     ]
                 }
