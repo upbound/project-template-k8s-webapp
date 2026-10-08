@@ -18,7 +18,7 @@ _items = [
                         {
                             kind: "ServiceAccount"
                             name: "crossplane"
-                            namespace: "crospslane-system"
+                            namespace: "crossplane-system"
                         }
                     ]
                 }
@@ -49,7 +49,7 @@ _items = [
             ]
             extraResources: []
             skipDelete: False
-            timeoutSeconds: 4500
+            timeoutSeconds: 600 # 10 minutes
         }
     }
 ]

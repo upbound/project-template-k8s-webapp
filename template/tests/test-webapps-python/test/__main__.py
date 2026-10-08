@@ -1,9 +1,10 @@
-from .model.io.upbound.dev.meta.compositiontest import v1alpha1 as compositiontest
-from .model.io.k8s.apimachinery.pkg.apis.core.meta import v1 as coremetav1
-from .model.io.k8s.apimachinery.pkg.apis.meta import v1 as metav1
-from .model.io.k8s.api.apps import v1 as appsv1
-from .model.io.k8s.api.core import v1 as corev1
-from .model.com.example.platform.webapp import v1alpha1 as platformv1alpha1
+import yaml
+from models.io.upbound.dev.meta.compositiontest import v1alpha1 as compositiontest
+from models.io.k8s.apimachinery.pkg.apis.core.meta import v1 as coremetav1
+from models.io.k8s.apimachinery.pkg.apis.meta import v1 as metav1
+from models.io.k8s.api.apps import v1 as appsv1
+from models.io.k8s.api.core import v1 as corev1
+from models.com.example.platform.webapp import v1alpha1 as platformv1alpha1
 
 deployment = appsv1.Deployment(
     apiVersion = 'apps/v1',
@@ -205,3 +206,7 @@ test = compositiontest.CompositionTest(
         validate=False
     )
 )
+
+# The test runner expects an "items" array, one entry per test.
+output = {"items": [test.model_dump(by_alias=True, exclude_none=True)]}
+print(yaml.dump(output))

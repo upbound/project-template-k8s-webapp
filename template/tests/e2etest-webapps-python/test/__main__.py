@@ -1,9 +1,10 @@
-from .model.io.upbound.dev.meta.e2etest import v1alpha1 as e2etest
-from .model.io.k8s.apimachinery.pkg.apis.meta import v1 as metav1
-from .model.io.k8s.apimachinery.pkg.apis.core.meta import v1 as metacorev1
+import yaml
+from models.io.upbound.dev.meta.e2etest import v1alpha1 as e2etest
+from models.io.k8s.apimachinery.pkg.apis.meta import v1 as metav1
+from models.io.k8s.apimachinery.pkg.apis.core.meta import v1 as metacorev1
 
-from .model.io.k8s.api.rbac import v1 as rbacv1
-from .model.com.example.platform.webapp import v1alpha1 as platformv1alpha1
+from models.io.k8s.api.rbac import v1 as rbacv1
+from models.com.example.platform.webapp import v1alpha1 as platformv1alpha1
 
 test = e2etest.E2ETest(
     metadata=metav1.ObjectMeta(
@@ -65,6 +66,11 @@ test = e2etest.E2ETest(
         ],
         extraResources=[],
         skipDelete=False,
-        timeoutSeconds=4500,
+        timeoutSeconds=600, # 10 minutes
     )
 )
+
+
+# The test runner expects an "items" array, one entry per test.
+output = {"items": [test.model_dump(by_alias=True, exclude_none=True)]}
+print(yaml.dump(output))

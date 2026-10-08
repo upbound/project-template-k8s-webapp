@@ -4,7 +4,11 @@ import models.io.k8s.api.core.v1 as corev1
 import models.io.k8s.api.networking.v1 as networkingv1
 import models.com.example.platform.v1alpha1 as platformv1alpha1
 
-oxr = platformv1alpha1.WebApp{**option("params").oxr} # observed claim
+oxr = option("params").oxr # observed composite resource
+# Validate only the parameters against the generated schema. Crossplane adds
+# fields under spec.crossplane (such as namespaced resourceRefs) that the
+# generated WebApp schema doesn't model, so don't type the whole XR.
+params = platformv1alpha1.PlatformExampleComV1alpha1WebAppSpecParameters{**oxr.spec.parameters}
 _ocds = option("params").ocds # observed composed resources
 _dxr = option("params").dxr # desired composite resource
 dcds = option("params").dcds # desired composed resources
@@ -22,7 +26,7 @@ _desired_deployment = appsv1.Deployment{
         }
     }
     spec: {
-        replicas: oxr.spec.parameters.replicas
+        replicas: params.replicas
         selector: {
             matchLabels: {
                 "app.kubernetes.io/name": oxr.metadata.name
@@ -37,14 +41,14 @@ _desired_deployment = appsv1.Deployment{
                 }
             }
             spec: {
-                serviceAccountName: oxr.spec.parameters.serviceAccount
+                serviceAccountName: params.serviceAccount
                 containers: [{
                     name: oxr.metadata.name
-                    image: oxr.spec.parameters.image
+                    image: params.image
                     imagePullPolicy: "Always"
                     ports: [{
                         name: "http"
-                        containerPort: int(oxr.spec.parameters.port)
+                        containerPort: int(params.port)
                         protocol: "TCP"
                     }]
                     resources: {
@@ -68,7 +72,7 @@ observed_deployment = option("params").ocds["deployment"]?.Resource
 if any_true([c.type == "Available" and c.status == "True" for c in observed_deployment?.status?.conditions or []]):
   _desired_deployment.metadata.annotations["krm.kcl.dev/ready"] = "True"
 
-if oxr.spec.parameters.service.enabled:
+if params.service.enabled:
     _desired_service = corev1.Service{
         metadata: _metadata("service") | {
             name: oxr.metadata.name
@@ -91,7 +95,7 @@ observed_service = option("params").ocds["service"]?.Resource
 if observed_service?.spec?.clusterIP:
   _desired_service.metadata.annotations["krm.kcl.dev/ready"] = "True"
 
-if oxr.spec.parameters.ingress.enabled:
+if params.ingress.enabled:
     _desired_ingress = networkingv1.Ingress{
         metadata: _metadata("ingress") | {
             name: oxr.metadata.name
