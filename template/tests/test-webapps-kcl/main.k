@@ -3,12 +3,23 @@ import models.io.upbound.dev.meta.v1alpha1 as metav1alpha1
 import models.io.k8s.api.apps.v1 as appsv1
 import models.io.k8s.api.core.v1 as corev1
 
+# This test runs against the function in every language, so assert only the
+# fields that every function returns. The generated Kubernetes schemas default
+# status (and a Deployment's spec.strategy) to {}, so clear them from the
+# expected resources. Port protocols also default to TCP, and the Python SDK
+# omits fields set to their default value, so clear those too.
+_stripDefaults = lambda obj: any -> any {
+    obj | {
+        status = Undefined
+    }
+}
+
 _items = [
     metav1alpha1.CompositionTest{
         metadata.name: "test-webapps-kcl"
         spec= {
             assertResources: [
-                appsv1.Deployment{
+                _stripDefaults(appsv1.Deployment{
                     metadata: {
                         name: "webservice"
                         namespace: "default"
@@ -18,6 +29,7 @@ _items = [
                     }
                     spec = {
                         replicas: 1
+                        strategy = Undefined
                         selector: {
                             matchLabels: {
                                 "app.kubernetes.io/name": "webservice"
@@ -40,7 +52,7 @@ _items = [
                                     ports: [{
                                         name: "http"
                                         containerPort: 8080
-                                        protocol: "TCP"
+                                        protocol = Undefined
                                     }]
                                     resources: {
                                         requests: {
@@ -57,7 +69,7 @@ _items = [
                             }
                         }
                     }
-                }
+                })
 
                 platformv1alpha1.WebApp{
                     apiVersion: "platform.example.com/v1alpha1"
@@ -94,7 +106,7 @@ _items = [
                     }
                 }
 
-                corev1.Service{
+                _stripDefaults(corev1.Service{
                     metadata:{
                         name: "webservice"
                         namespace: "default"
@@ -105,12 +117,12 @@ _items = [
                         }
                         ports: [{
                             name: "http"
-                            protocol: "TCP"
                             port: 80
+                            protocol = Undefined
                             targetPort: "http"
                         }]
                     }
-                }
+                })
 
             ]
             observedResources: [
