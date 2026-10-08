@@ -10,6 +10,7 @@ import (
 	corev1 "dev.upbound.io/models/io/k8s/core/v1"
 	networkingv1 "dev.upbound.io/models/io/k8s/networking/v1"
 	resourcev1 "dev.upbound.io/models/io/k8s/resource/v1"
+	utilv1 "dev.upbound.io/models/io/k8s/util/v1"
 	"github.com/crossplane/crossplane-runtime/pkg/logging"
 	"github.com/crossplane/function-sdk-go/errors"
 	fnv1 "github.com/crossplane/function-sdk-go/proto/v1"
@@ -129,12 +130,12 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 						}},
 						Resources: &corev1.ResourceRequirements{
 							Requests: &map[string]resourcev1.Quantity{
-								"memory": "64Mi",
-								"cpu":    "250m",
+								"memory": quantity("64Mi"),
+								"cpu":    quantity("250m"),
 							},
 							Limits: &map[string]resourcev1.Quantity{
-								"memory": "1Gi",
-								"cpu":    "1",
+								"memory": quantity("1Gi"),
+								"cpu":    quantity("1"),
 							},
 						},
 					}},
@@ -184,7 +185,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 					Name:       ptr.To("http"),
 					Protocol:   ptr.To("TCP"),
 					Port:       ptr.To(int32(80)),
-					TargetPort: ptr.To("http"),
+					TargetPort: intOrString("http"),
 				}},
 			},
 			// ToDo(haarchri): remove this
@@ -381,4 +382,18 @@ func convertViaJSON(to, from any) error {
 		return err
 	}
 	return json.Unmarshal(bs, to)
+}
+
+// quantity returns a resource quantity such as "64Mi" or "250m".
+func quantity(s string) resourcev1.Quantity {
+	var q resourcev1.Quantity
+	_ = q.FromIoK8SApimachineryPkgAPIResourceQuantity0(s) // Marshalling a string can't fail.
+	return q
+}
+
+// intOrString returns a named port reference such as "http".
+func intOrString(s string) *utilv1.IntOrString {
+	var v utilv1.IntOrString
+	_ = v.FromString(s) // Marshalling a string can't fail.
+	return &v
 }
